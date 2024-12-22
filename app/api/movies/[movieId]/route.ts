@@ -4,18 +4,13 @@ import { serverAuth } from "@/lib/auth"; // Assuming serverAuth middleware
 
 // The function for GET requests
 export async function GET(req: Request, {
-    // @ts-expect-error @ts-ignore
-    params } ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    params }: {params: any} ) {
     try {
         // Authenticate the user
         await serverAuth();
 
-        // Ensure params and movieId exist
-        if (!params?.movieId || typeof params.movieId !== "string") {
-            return NextResponse.json({ error: "Invalid or missing movie ID" }, { status: 400 });
-        }
-
-        const { movieId } = params; // Extract movieId from route parameters
+        const { movieId } = await params; // Extract movieId from route parameters
 
         // Fetch the movie from the database
         const movie = await prisma.movie.findUnique({
